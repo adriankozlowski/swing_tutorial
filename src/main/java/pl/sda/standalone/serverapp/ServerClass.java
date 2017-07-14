@@ -35,18 +35,19 @@ public class ServerClass {
     
 }
 
-class MyThread extends Thread{
-
+class MyThread extends Thread {
+    
     private Socket client;
     
     public MyThread(Socket socket) {
         this.client = socket;
     }
-
+    
     @Override
     public void run() {
         try {
             OutputStream outputStream = this.client.getOutputStream();
+            outputStream.write("Połaczony".getBytes());
             InputStream inputStream = this.client.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             
@@ -54,6 +55,5 @@ class MyThread extends Thread{
             Logger.getLogger(MyThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     
 }
