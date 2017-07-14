@@ -50,6 +50,34 @@ class MyThread extends Thread {
             outputStream.write("Połaczony".getBytes());
             InputStream inputStream = this.client.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String s = null;
+            int state = 1;
+            while ((s = bufferedReader.readLine()) != null) {
+                System.out.println(new String(s.getBytes("UTF-8")));
+                if (state == 1 && s.equalsIgnoreCase("HI")) {
+                    outputStream.write("HI\r".getBytes());
+                    outputStream.write("HI\r".getBytes());
+                    state++;
+                } else if (state == 2 && s.equalsIgnoreCase("SEND")) {
+                    outputStream.write("OK\r".getBytes());
+                    state++;
+                } else if (state == 3 && s.startsWith("SIZE:")) {
+                    String[] split = s.split(":");
+                    String sendPart = split[0];
+                    String sizePart = split[1];
+                    try {
+                        Integer integer = Integer.valueOf(sizePart);
+                    } catch (NumberFormatException e) {
+                        outputStream.write("NO\r".getBytes());
+                    }
+                    outputStream.write("OK\r".getBytes());
+                    state++;
+                } else if (state == 4 && s.equalsIgnoreCase("")) {
+                    System.out.println("koniec połączenia");
+                }
+            }
+            bufferedReader.close();
+            outputStream.close();
             
         } catch (IOException ex) {
             Logger.getLogger(MyThread.class.getName()).log(Level.SEVERE, null, ex);
