@@ -7,16 +7,22 @@ package pl.sda.standalone.swingapp;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Adrian
  */
 public class MainWindow extends javax.swing.JFrame {
+
+    private InputStream inputStream;
+    private OutputStream outputStream;
 
     /**
      * Creates new form MainWindow
@@ -26,32 +32,9 @@ public class MainWindow extends javax.swing.JFrame {
         try {
             String toSend = "Uczę się Javy!";
 
-            Socket socket = new Socket("localhost", 10001);
-            final InputStream inputStream = socket.getInputStream();
-            final OutputStream outputStream = socket.getOutputStream();
-
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-            dataOutputStream.writeBytes("HI\r");
-            int state = 1;
-            String s = null;
-            while ((s = bufferedReader.readLine()) != null) {
-
-                System.out.println(s);
-                if (state == 1 && s.equalsIgnoreCase("HI")) {
-                    dataOutputStream.writeBytes("SEND\r");
-                    state++;
-                } else if (state == 2 && s.equalsIgnoreCase("OK")) {
-                    dataOutputStream.writeBytes("SIZE:" + toSend.getBytes().length + "\r");
-                    state++;
-                } else if (state == 3 && s.equalsIgnoreCase("OK")) {
-                    dataOutputStream.writeUTF(toSend + "\r\r");
-                    state++;
-                } else if (state == 5 && s.equalsIgnoreCase("OK")) {
-                    bufferedReader.close();
-                    dataOutputStream.close();
-                }
-            }
+            Socket socket = new Socket("localhost", 10000);
+            this.inputStream = socket.getInputStream();
+            this.outputStream = socket.getOutputStream();         
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,8 +62,14 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         jTextField1.setText("jTextField1");
+        jTextField1.setName("text"); // NOI18N
 
         jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -110,6 +99,33 @@ public class MainWindow extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            String toSend = this.jTextField1.getText();
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+            dataOutputStream.writeBytes("HI\r");
+            int state = 1;
+            String s = null;
+            while ((s = bufferedReader.readLine()) != null) {
+                this.jTextArea1.setText(this.jTextArea1.getText()+s+"\r");
+                if (state == 1 && s.equalsIgnoreCase("HI")) {
+                    dataOutputStream.writeBytes("SEND\r");
+                    state++;
+                } else if (state == 2 && s.equalsIgnoreCase("OK")) {
+                    dataOutputStream.writeBytes("SIZE:" + toSend.getBytes().length + "\r");
+                    state++;
+                } else if (state == 3 && s.equalsIgnoreCase("OK")) {
+                    dataOutputStream.writeUTF(toSend + "\r\r");
+                    state = 0;
+                    break;
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
