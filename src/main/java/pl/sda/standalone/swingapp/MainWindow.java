@@ -5,6 +5,13 @@
  */
 package pl.sda.standalone.swingapp;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Socket;
+
 /**
  *
  * @author Adrian
@@ -16,6 +23,39 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow() {
         initComponents();
+        try {
+            String toSend = "Uczę się Javy!";
+
+            Socket socket = new Socket("localhost", 10001);
+            final InputStream inputStream = socket.getInputStream();
+            final OutputStream outputStream = socket.getOutputStream();
+
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+            dataOutputStream.writeBytes("HI\r");
+            int state = 1;
+            String s = null;
+            while ((s = bufferedReader.readLine()) != null) {
+
+                System.out.println(s);
+                if (state == 1 && s.equalsIgnoreCase("HI")) {
+                    dataOutputStream.writeBytes("SEND\r");
+                    state++;
+                } else if (state == 2 && s.equalsIgnoreCase("OK")) {
+                    dataOutputStream.writeBytes("SIZE:" + toSend.getBytes().length + "\r");
+                    state++;
+                } else if (state == 3 && s.equalsIgnoreCase("OK")) {
+                    dataOutputStream.writeUTF(toSend + "\r\r");
+                    state++;
+                } else if (state == 5 && s.equalsIgnoreCase("OK")) {
+                    bufferedReader.close();
+                    dataOutputStream.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
