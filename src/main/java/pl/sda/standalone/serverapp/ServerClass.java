@@ -47,7 +47,6 @@ class MyThread extends Thread {
     public void run() {
         try {
             OutputStream outputStream = this.client.getOutputStream();
-            outputStream.write("Połaczony".getBytes());
             InputStream inputStream = this.client.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String s = null;
@@ -74,6 +73,7 @@ class MyThread extends Thread {
                     state++;
                 } else if (state == 4 && s.equalsIgnoreCase("")) {
                     System.out.println("koniec połączenia");
+                    state = 1;
                 }
             }
             bufferedReader.close();
