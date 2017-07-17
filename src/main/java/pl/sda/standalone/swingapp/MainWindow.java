@@ -12,8 +12,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
+import pl.sda.standalone.model.User;
 
 /**
  *
@@ -23,22 +32,19 @@ public class MainWindow extends javax.swing.JFrame {
 
     private InputStream inputStream;
     private OutputStream outputStream;
+    private final SessionFactory sessionFactory;
 
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         initComponents();
-        try {
-            String toSend = "Uczę się Javy!";
-
-            Socket socket = new Socket("localhost", 10000);
-            this.inputStream = socket.getInputStream();
-            this.outputStream = socket.getOutputStream();         
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Configuration configuration = new Configuration();
+        configuration.configure();
+        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties())
+                .build();
+        this.sessionFactory = configuration.buildSessionFactory(serviceRegistry);     
     }
 
     /**
@@ -101,32 +107,16 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            String toSend = this.jTextField1.getText();
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-            dataOutputStream.writeBytes("HI\r");
-            int state = 1;
-            String s = null;
-            while ((s = bufferedReader.readLine()) != null) {
-                this.jTextArea1.setText(this.jTextArea1.getText()+s+"\r");
-                if (state == 1 && s.equalsIgnoreCase("HI")) {
-                    dataOutputStream.writeBytes("SEND\r");
-                    state++;
-                } else if (state == 2 && s.equalsIgnoreCase("OK")) {
-                    dataOutputStream.writeBytes("SIZE:" + toSend.getBytes().length + "\r");
-                    state++;
-                } else if (state == 3 && s.equalsIgnoreCase("OK")) {
-                    dataOutputStream.writeUTF(toSend + "\r\r");
-                    state = 0;
-                    break;
-                }
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Session openSession = this.sessionFactory.openSession();
+        Query createQuery = openSession.createQuery("from User");
+        List list = createQuery.list();
+        list.forEach(this::console);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public void console(User user){
+        System.out.println(user.getFirstName());
+    }
+    
     /**
      * @param args the command line arguments
      */
