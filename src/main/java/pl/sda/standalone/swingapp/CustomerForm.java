@@ -143,13 +143,21 @@ public class CustomerForm extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         File file = new File("testfile.txt");
         try {
+            //otwieramy strumień pliku do odczytu
             BufferedReader reader = new BufferedReader(new FileReader(file));
+            //odczytujemy linie (całą do znaku enter)
             String readLine = reader.readLine();
+            //zamykamy plik, bo nie jest nam juz potrzebny
             reader.close();
+            //odczytany ciąg dzielimy wzgledem pipe'a
             String[] split = readLine.split("\\|");
+            //pierwszy element tablicy to imie
             String firstName = split[0];
+            //drugi element tablicy to nazwisko
             String lastName = split[1];
+            //przypisanie wartości do pola tekstowego            
             this.txtFirstName.setText(firstName);
+            //przypisanie wartości do pola tekstowego
             this.txtLastName.setText(lastName);
         } catch (IOException ex) {
             ex.printStackTrace();
