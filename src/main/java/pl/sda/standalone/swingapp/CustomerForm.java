@@ -5,6 +5,13 @@
  */
 package pl.sda.standalone.swingapp;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Adrian
@@ -97,7 +104,15 @@ public class CustomerForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        lblResult.setText("Czesc "+ this.txtFirstName.getText()+" "+ txtLastName.getText());
+        String name = txtFirstName.getText() + "|" + txtLastName.getText();
+        lblResult.setText(name);
+        File file = new File("testfile.txt");
+        try {
+            BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+            fileWriter.write(name);
+        } catch (IOException ex) {
+            Logger.getLogger(CustomerForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
