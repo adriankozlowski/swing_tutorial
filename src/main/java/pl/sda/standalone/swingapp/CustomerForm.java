@@ -5,25 +5,28 @@
  */
 package pl.sda.standalone.swingapp;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 
 /**
  *
- * @author Adrian
+ * @author RENT
  */
 public class CustomerForm extends javax.swing.JFrame {
 
     /**
-     * Creates new form CustomerForm
+     * Creates new form NewJFrame
      */
     public CustomerForm() {
         initComponents();
@@ -38,36 +41,48 @@ public class CustomerForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtFirstName = new javax.swing.JTextField();
-        txtLastName = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtName = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtSurname = new javax.swing.JTextArea();
+        lblName = new javax.swing.JLabel();
+        lblSurname = new javax.swing.JLabel();
+        btnSend = new javax.swing.JButton();
         lblResult = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnLoad = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        txtFirstName.setText("jTextField1");
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        txtLastName.setText("jTextField2");
+        txtName.setColumns(20);
+        txtName.setRows(5);
+        jScrollPane1.setViewportView(txtName);
 
-        jLabel1.setText("Imie");
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        jLabel2.setText("Nazwisko");
+        txtSurname.setColumns(20);
+        txtSurname.setRows(5);
+        txtSurname.setAutoscrolls(false);
+        jScrollPane2.setViewportView(txtSurname);
 
-        jButton1.setText("OK");
-        jButton1.setName(""); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        lblName.setText("Name:");
+
+        lblSurname.setText("Surname:");
+
+        btnSend.setText("Send");
+        btnSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSendActionPerformed(evt);
             }
         });
 
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnLoad.setText("Load...");
+        btnLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnLoadActionPerformed(evt);
             }
         });
 
@@ -77,92 +92,78 @@ public class CustomerForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtFirstName)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblResult, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnLoad, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(lblResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblSurname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1)
+                        .addComponent(btnSend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                .addComponent(lblName, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblSurname, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jButton2))
-                    .addComponent(lblResult))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblResult, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //skomponowanie wyjścia
-        String name = txtFirstName.getText() + "|" + txtLastName.getText();
-        //wyświetlenie wyjścia
-        lblResult.setText(name);
-        //tworzymy uchwyt do pliku
+    private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
+        // TODO add your handling code here:
+        String result = this.txtName.getText().trim()+"|"+this.txtSurname.getText().trim();
+        lblResult.setText(result);
+        User newUser = new User(this.txtName.getText().trim(), this.txtSurname.getText().trim());
+        
+        try(ObjectOutputStream dos = new ObjectOutputStream(new FileOutputStream(this.txtName.getText().trim().charAt(0)+""+this.txtSurname.getText().trim().charAt(0)+".file"))){
+            dos.writeObject(newUser);
+        }catch(IOException ioe){
+            
+        }
+        
         File file = new File("testfile.txt");
-        try {
-            //tworzymy (otwieramy) strumień do zapisu
+        try{
             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-            //wiadomo
-            fileWriter.write(name);
-            //tu też
+            fileWriter.write(result);
             fileWriter.newLine();
-            //Zamykami plik
             fileWriter.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        }catch(IOException ioe){
+            Logger.getLogger(CustomerForm.class.getName()).log(Level.SEVERE, null, ioe);
+        }finally{
+            txtName.setText("");
+            txtSurname.setText("");
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSendActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        File file = new File("testfile.txt");
-        try {
-            //otwieramy strumień pliku do odczytu
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            //odczytujemy linie (całą do znaku enter)
-            String readLine = reader.readLine();
-            //zamykamy plik, bo nie jest nam juz potrzebny
-            reader.close();
-            //odczytany ciąg dzielimy wzgledem pipe'a
-            String[] split = readLine.split("\\|");
-            //pierwszy element tablicy to imie
-            String firstName = split[0];
-            //drugi element tablicy to nazwisko
-            String lastName = split[1];
-            //przypisanie wartości do pola tekstowego            
-            this.txtFirstName.setText(firstName);
-            //przypisanie wartości do pola tekstowego
-            this.txtLastName.setText(lastName);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
+        // TODO add your handling code here:
+        try(BufferedReader fileReader = new BufferedReader(new FileReader("testfile.txt"))){
+            Optional<String> line = fileReader.lines().findFirst();
+            if (line.isPresent()){
+                String[] splitted = line.get().split("\\|");
+                txtName.setText(splitted[0]);
+                txtSurname.setText(splitted[1]);
+            }
+        }catch(IOException ioe){
+            Logger.getLogger(CustomerForm.class.getName()).log(Level.SEVERE, null, ioe);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnLoadActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,6 +191,13 @@ public class CustomerForm extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -200,12 +208,14 @@ public class CustomerForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton btnLoad;
+    private javax.swing.JButton btnSend;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblResult;
-    private javax.swing.JTextField txtFirstName;
-    private javax.swing.JTextField txtLastName;
+    private javax.swing.JLabel lblSurname;
+    private javax.swing.JTextArea txtName;
+    private javax.swing.JTextArea txtSurname;
     // End of variables declaration//GEN-END:variables
 }
