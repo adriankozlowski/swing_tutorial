@@ -5,16 +5,14 @@
  */
 package pl.sda.standalone.swingapp;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  *
@@ -120,47 +118,48 @@ public class CustomerForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //skomponowanie wyjścia
-        String name = txtFirstName.getText() + "|" + txtLastName.getText();
-        //wyświetlenie wyjścia
-        lblResult.setText(name);
-        //tworzymy uchwyt do pliku
-        File file = new File("testfile.txt");
+        // TODO add your handling code here:
+        this.lblResult.setText(txtFirstName.getText() + " " + txtLastName.getText());
+        this.lblResult.setVisible(true);
+        String name = txtFirstName.getText() + " " + txtLastName.getText();
+        File file = new File("textfile.txt");
+
         try {
-            //tworzymy (otwieramy) strumień do zapisu
-            BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-            //wiadomo
-            fileWriter.write(name);
-            //tu też
-            fileWriter.newLine();
-            //Zamykami plik
-            fileWriter.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+
+            User user = new User();
+            user.setName(txtFirstName.getText());
+            user.setLastName(txtLastName.getText());
+
+            FileOutputStream fileOutputStream = new FileOutputStream("textfileKlasa.txt");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(user);
+            objectOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            //  e.printStackTrace();
         }
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        File file = new File("testfile.txt");
+        File file = new File("textfile.txt");
         try {
-            //otwieramy strumień pliku do odczytu
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            //odczytujemy linie (całą do znaku enter)
-            String readLine = reader.readLine();
-            //zamykamy plik, bo nie jest nam juz potrzebny
-            reader.close();
-            //odczytany ciąg dzielimy wzgledem pipe'a
-            String[] split = readLine.split("\\|");
-            //pierwszy element tablicy to imie
-            String firstName = split[0];
-            //drugi element tablicy to nazwisko
-            String lastName = split[1];
-            //przypisanie wartości do pola tekstowego            
-            this.txtFirstName.setText(firstName);
-            //przypisanie wartości do pola tekstowego
-            this.txtLastName.setText(lastName);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            FileInputStream fileInputStream = new FileInputStream("textfileKlasa.txt");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            User user = (User) objectInputStream.readObject();
+            objectInputStream.close();
+
+            txtFirstName.setText(user.name);
+            txtLastName.setText(user.lastName);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+         ex.printStackTrace();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
