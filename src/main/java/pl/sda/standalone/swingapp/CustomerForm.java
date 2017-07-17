@@ -110,6 +110,8 @@ public class CustomerForm extends javax.swing.JFrame {
         try {
             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
             fileWriter.write(name);
+            fileWriter.newLine();
+            fileWriter.close();
         } catch (IOException ex) {
             Logger.getLogger(CustomerForm.class.getName()).log(Level.SEVERE, null, ex);
         }
