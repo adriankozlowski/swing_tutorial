@@ -104,16 +104,23 @@ public class CustomerForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //skomponowanie wyjścia
         String name = txtFirstName.getText() + "|" + txtLastName.getText();
+        //wyświetlenie wyjścia
         lblResult.setText(name);
+        //tworzymy uchwyt do pliku
         File file = new File("testfile.txt");
         try {
+            //tworzymy (otwieramy) strumień do zapisu
             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+            //wiadomo
             fileWriter.write(name);
+            //tu też
             fileWriter.newLine();
+            //Zamykami plik
             fileWriter.close();
         } catch (IOException ex) {
-            Logger.getLogger(CustomerForm.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
