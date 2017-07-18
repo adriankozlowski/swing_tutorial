@@ -182,11 +182,10 @@ public class CustomerForm extends javax.swing.JFrame {
         try(BufferedReader fileReader = new BufferedReader(new FileReader("testfile.txt"))){
             fileReader.lines().forEach(line -> {
                 if (!line.equals("")) {
-                    System.out.println(line);
                     String[] splitted = line.split("\\|");
                     txtName.setText(splitted[0]);
                     txtSurname.setText(splitted[1]);
-                    System.out.println(splitted[0] + " " + splitted[1]);
+                    //System.out.println(splitted[0] + " " + splitted[1]);
                     usersList.add(new User(splitted[0], splitted[1]));
                 }
             });
