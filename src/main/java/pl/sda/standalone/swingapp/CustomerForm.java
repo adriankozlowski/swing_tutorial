@@ -14,12 +14,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
+import pl.sda.standalone.jdbc.JdbcTutorial;
 
 /**
  *
@@ -147,6 +149,8 @@ public class CustomerForm extends javax.swing.JFrame {
         lblResult.setText(result);
         User newUser = new User(this.txtName.getText().trim(), this.txtSurname.getText().trim());
         
+        newUser.saveToDB(jdbc);
+        
         try(ObjectOutputStream dos = new ObjectOutputStream(new FileOutputStream(this.txtName.getText().trim().charAt(0)+""+this.txtSurname.getText().trim().charAt(0)+".file"))){
             dos.writeObject(newUser);
         }catch(IOException ioe){
@@ -240,10 +244,14 @@ public class CustomerForm extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new CustomerForm().setVisible(true);
+                jdbc = new JdbcTutorial();
+               // connectionDb = jdbc.connect();
             }
         });
     }
-
+    
+    private JdbcTutorial jdbc;
+   // private Connection connectionDb;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLoad;
     private javax.swing.JButton btnSend;

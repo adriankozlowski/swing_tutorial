@@ -7,6 +7,7 @@ package pl.sda.standalone.swingapp;
 
 import com.sun.istack.internal.NotNull;
 import java.io.Serializable;
+import pl.sda.standalone.jdbc.JdbcTutorial;
 
 /**
  *
@@ -33,5 +34,13 @@ public class User implements Serializable{
      */
     public String getSurname() {
         return surname;
+    }
+    
+    public void saveToDB(JdbcTutorial jdbc){
+        jdbc.makeQuery(
+                jdbc.connect(), 
+                "insert into users (first_name, last_name) values ("+this.name+", "+this.surname+")", 
+                new String[]{"first_name", "last_name"}
+        );
     }
 }
