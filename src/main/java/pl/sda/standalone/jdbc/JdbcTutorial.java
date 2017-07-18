@@ -9,6 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import pl.sda.standalone.swingapp.User;
 
 /**
  *
@@ -16,24 +19,45 @@ import java.sql.SQLException;
  */
 public class JdbcTutorial {
     
-    private static String url = "jdbc:mysql://localhost/book_db";
+    private static String url = "jdbc:mysql://localhost/books_db";
     private static String userName = "root";
     private static String password = "";
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException{
-        DBConnectionManager dbConnectionManager =
-                new DBConnectionManager(url, userName, password);
-        Connection connection = dbConnectionManager.getConnection();
+        
+        
+    }
+    
+    public List<User> makeQuery(Connection c, String q, String[] params){
         PreparedStatement ps = null;
+        List<User> users = new ArrayList<User>();
         try{
-            ps = connection.prepareStatement("select id, first_name, last_name from users");
+            ps = c.prepareStatement(q);
             ResultSet resultSet = ps.executeQuery();
             while(resultSet.next()){
-                String firstName = resultSet.getString("first_name");
+                String firstName = resultSet.getString(params[0]);
                 System.out.println(firstName);
+                String lastName = resultSet.getString(params[1]);
+                System.out.println(lastName);
+                users.add(new User(firstName, lastName));
             }
+        }catch(SQLException sqle){
+            sqle.printStackTrace();
+        }
+        return users;
+    }
+    
+    public Connection connect(){
+        DBConnectionManager dbConnectionManager = null;
+        try{
+            dbConnectionManager =
+                new DBConnectionManager(url, userName, password);
+        }catch(ClassNotFoundException cnfe){
+            
         }catch(SQLException sqle){
             
         }
+        
+        return dbConnectionManager.getConnection();
     }
 }
