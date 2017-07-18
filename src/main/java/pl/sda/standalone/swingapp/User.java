@@ -15,9 +15,23 @@ import java.io.Serializable;
 public class User implements Serializable{
     private String name;
     private String surname;
-    
+
     public User(@NotNull String newName, @NotNull String newSurname){
         this.name = newName;
         this.surname = newSurname;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return the surname
+     */
+    public String getSurname() {
+        return surname;
     }
 }
